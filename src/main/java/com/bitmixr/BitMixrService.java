@@ -267,7 +267,7 @@ public class BitMixrService {
 		List<Payment> paymentsNeedingSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and sentAmount < recievedAmount and recievedAmount - sentAmount > :minimumAmount order by createdOn", Payment.class).setParameter("minimumAmount", Utils.CENT)
 				.setParameter("sixtySecondsAgo", sixtySecondsAgo.getTime()).getResultList();
 		for (final Payment payee : paymentsNeedingSending) {
-			List<Payment> paymentsAvailableForSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and recievedAmount - spentAmount > :minimumAmount and id != :excludedId", Payment.class).setParameter("minimumAmount", Utils.CENT).setParameter("excludedId", payee.getId()).setParameter("sixtySecondsAgo", sixtySecondsAgo).getResultList();
+			List<Payment> paymentsAvailableForSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and recievedAmount - spentAmount > :minimumAmount and id != :excludedId", Payment.class).setParameter("minimumAmount", Utils.CENT).setParameter("excludedId", payee.getId()).setParameter("sixtySecondsAgo", sixtySecondsAgo.getTime()).getResultList();
 			if (paymentsAvailableForSending.size() < 1) {
 				continue;
 			}
