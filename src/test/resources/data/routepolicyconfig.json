@@ -1,0 +1,17 @@
+{
+    "name": "RDS3",
+    "static-routes": [
+        {
+            "network": "10.1.2.56.119",
+            "netmask": "255.255.255.0",
+            "gateway": "10.2.56.1",
+            "interface": "eth0"
+        },
+        {
+            "network": "10.1.2.56.110",
+            "netmask": "255.255.255.0",
+            "gateway": "10.2.56.1",
+            "interface": "lan0"
+        }
+    ]
+}

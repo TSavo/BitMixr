@@ -1,0 +1,13 @@
+{
+    "type": "static",
+    "address": "192.168.8.139",
+    "netmask": "255.255.255.0",
+    "broadcast": "192.168.8.255",
+    "gateway": "192.168.8.254",
+    "pointtopoint": "cp01",
+    "hwaddres": "82:fe:6e:12:85:41",
+    "mtu": 1500,
+    "post-up": [
+        "route add -net 10.10.10.0/24 gw 192.168.8.1 "
+    ]
+}
