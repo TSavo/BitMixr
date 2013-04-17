@@ -24,14 +24,14 @@
 	<bean
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	<bean class="java.net.URI" id="dbUrl">
-		<constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
+		<constructor-arg value="#{systemEnvironment['CLEARDB_DATABASE_URL']}"/>
 	</bean>
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
 		<property name="driverClass">
 			<value>com.mysql.jdbc.Driver</value>
 		</property>		
-		<property name="jdbcUrl" value="#{ 'jdbc:mysql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath() }"/>
+		<property name="jdbcUrl" value="jdbc:#{systemEnvironment['CLEARDB_DATABASE_URL'] }/bitmixr"/>
 		<property name="user" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
 		<property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
 		<property name="initialPoolSize">
