@@ -31,7 +31,7 @@
 		<property name="driverClass">
 			<value>com.mysql.jdbc.Driver</value>
 		</property>		
-		<property name="jdbcUrl" value="#{ 'jdbc:mysql://' + @dbUrl.getHost() + ':' + '3306' + @dbUrl.getPath() }"/>
+		<property name="jdbcUrl" value="#{ 'jdbc:mysql://' + @dbUrl.getHost() + ':' + '3306' + @dbUrl.getPath() }?reconnect=true"/>
 		<property name="user" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
 		<property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
 		<property name="initialPoolSize">
