@@ -383,7 +383,7 @@ public class BitMixrService {
 		if (!started.get()) {
 			return;
 		}
-		if (lock.tryLock()) {
+		if (!lock.tryLock()) {
 			return;
 		}
 		networkReceivesLock.lock();
