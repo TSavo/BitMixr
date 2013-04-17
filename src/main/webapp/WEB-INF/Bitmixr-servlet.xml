@@ -41,10 +41,10 @@
 			<value>3</value>
 		</property>
 		<property name="maxPoolSize">
-			<value>50</value>
+			<value>5</value>
 		</property>
 		<property name="idleConnectionTestPeriod">
-			<value>200</value>
+			<value>20</value>
 		</property>
 		<property name="acquireIncrement">
 			<value>1</value>
