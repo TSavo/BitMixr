@@ -261,6 +261,9 @@ public class BitMixrService {
 	@Transactional
 	@Scheduled(fixedDelay = 20000)
 	public void payOut() {
+		if(!started.get()){
+			return;
+		}
 		lock.lock();
 		Calendar sixtySecondsAgo = new GregorianCalendar();
 		sixtySecondsAgo.add(Calendar.SECOND, -60);
@@ -356,9 +359,12 @@ public class BitMixrService {
 		lock.unlock();
 	}
 
-	@Scheduled(fixedDelay = 2000)
+	@Scheduled(fixedDelay = 10000)
 	@Transactional
 	public void commitSends() {
+		if(!started.get()){
+			return;
+		}
 		lock.lock();
 		networkReceivesLock.lock();
 		for (NetworkReceive send : networkReceives) {
@@ -380,6 +386,9 @@ public class BitMixrService {
 	@Transactional
 	@Scheduled(fixedDelay = 60000)
 	public void expirePayments() {
+		if(!started.get()){
+			return;
+		}
 		lock.lock();
 		Date now = new Date();
 		Calendar twoWeeksAgo = new GregorianCalendar();
