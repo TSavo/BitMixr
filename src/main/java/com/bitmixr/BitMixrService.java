@@ -203,7 +203,7 @@ public class BitMixrService {
 		aPayment.setCreatedOn(new Date());
 		aPayment.setUpdatedOn(new Date());
 		aPayment.setPaidOn(null);
-		
+
 		ECKey key = new ECKey();
 		aPayment.setECKey(key);
 		aPayment.setSourceAddress(key.toAddress(params).toString());
@@ -261,7 +261,7 @@ public class BitMixrService {
 	@Transactional
 	@Scheduled(fixedDelay = 20000)
 	public void payOut() {
-		if(!started.get()){
+		if (!started.get()) {
 			return;
 		}
 		lock.lock();
@@ -270,7 +270,8 @@ public class BitMixrService {
 		List<Payment> paymentsNeedingSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and sentAmount < recievedAmount and recievedAmount - sentAmount > :minimumAmount order by createdOn", Payment.class).setParameter("minimumAmount", Utils.CENT)
 				.setParameter("sixtySecondsAgo", sixtySecondsAgo.getTime()).getResultList();
 		for (final Payment payee : paymentsNeedingSending) {
-			List<Payment> paymentsAvailableForSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and recievedAmount - spentAmount > :minimumAmount and id != :excludedId", Payment.class).setParameter("minimumAmount", Utils.CENT).setParameter("excludedId", payee.getId()).setParameter("sixtySecondsAgo", sixtySecondsAgo.getTime()).getResultList();
+			List<Payment> paymentsAvailableForSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and recievedAmount - spentAmount > :minimumAmount and id != :excludedId", Payment.class).setParameter("minimumAmount", Utils.CENT)
+					.setParameter("excludedId", payee.getId()).setParameter("sixtySecondsAgo", sixtySecondsAgo.getTime()).getResultList();
 			if (paymentsAvailableForSending.size() < 1) {
 				continue;
 			}
@@ -324,8 +325,10 @@ public class BitMixrService {
 			final BigInteger realTip = tip;
 			SendRequest request = Wallet.SendRequest.forTx(tx);
 			Wallet wallet = actors.get(payer.getId()).wallet;
-			if (!wallet.completeTx(request))
-				return; // Insufficient funds.
+			if (!wallet.completeTx(request)) {
+				System.out.println("AmountToSend: " + amountToSend + " wallet balence: " + wallet.getBalance() + " tip " + tip);
+				throw new RuntimeException("AmountToSend: " + amountToSend + " wallet balence: " + wallet.getBalance() + " tip " + tip);
+			}
 			// Ensure these funds won't be spent
 			// again.
 			try {
@@ -362,7 +365,7 @@ public class BitMixrService {
 	@Scheduled(fixedDelay = 10000)
 	@Transactional
 	public void commitSends() {
-		if(!started.get()){
+		if (!started.get()) {
 			return;
 		}
 		lock.lock();
@@ -386,7 +389,7 @@ public class BitMixrService {
 	@Transactional
 	@Scheduled(fixedDelay = 60000)
 	public void expirePayments() {
-		if(!started.get()){
+		if (!started.get()) {
 			return;
 		}
 		lock.lock();
