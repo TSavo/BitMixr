@@ -31,7 +31,7 @@
 		<property name="driverClass">
 			<value>com.mysql.jdbc.Driver</value>
 		</property>		
-		<property name="jdbcUrl" value="jdbc:#{systemEnvironment['CLEARDB_DATABASE_URL'] }/bitmixr"/>
+		<property name="jdbcUrl" value="jdbc:#{systemEnvironment['CLEARDB_DATABASE_URL'] }"/>
 		<property name="user" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
 		<property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
 		<property name="initialPoolSize">
