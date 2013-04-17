@@ -32,19 +32,6 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>com.googlecode.flyway</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>1.7</version>
-				<configuration>
-					<driver>com.mysql.jdbc.Driver</driver>
-					<url>jdbc:mysql://localhost:3306/readysteady</url>
-					<user>readysteady</user>
-					<password>str33tl3gal</password>
-					<schemas>readysteady</schemas>
-					<basePackage>com.readysteady.database</basePackage>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.1</version>
