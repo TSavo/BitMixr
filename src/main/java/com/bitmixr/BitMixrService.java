@@ -190,7 +190,6 @@ public class BitMixrService {
 		peerGroup.downloadBlockChain();
 	}
 
-	@Transactional
 	public void addPayment(Payment aPayment) {
 		if (!started.get()) {
 			throw new IllegalStateException("The block chain hasn't downloaded yet. Give it just a few more minutes and try again.");
@@ -218,15 +217,29 @@ public class BitMixrService {
 		entityManager.persist(aPayment);
 	}
 
+	private Thread startingThread = null;
+
 	@Scheduled(fixedDelay = 20000)
 	@Transactional
 	public void checkSeenTransactions() throws BlockStoreException {
-		lock.lock();
+		if (!lock.tryLock()) {
+			return;
+		}
 		if (!started.get()) {
-			init();
-			load();
-			startUp();
-			started.set(true);
+			if (startingThread == null) {
+				init();
+				load();
+				startingThread = new Thread() {
+					@Override
+					public void run() {
+						startUp();
+						started.set(true);
+					}
+				};
+				startingThread.start();
+			}
+			lock.unlock();
+			return;
 		}
 		actorsLock.readLock().lock();
 		for (WalletActor actor : actors.values()) {
@@ -264,7 +277,9 @@ public class BitMixrService {
 		if (!started.get()) {
 			return;
 		}
-		lock.lock();
+		if (!lock.tryLock()) {
+			return;
+		}
 		Calendar sixtySecondsAgo = new GregorianCalendar();
 		sixtySecondsAgo.add(Calendar.SECOND, -60);
 		List<Payment> paymentsNeedingSending = entityManager.createQuery("from Payment where (paidOn is null or paidOn < :sixtySecondsAgo) and sentAmount < recievedAmount and recievedAmount - sentAmount > :minimumAmount order by createdOn", Payment.class).setParameter("minimumAmount", Utils.CENT)
@@ -368,7 +383,9 @@ public class BitMixrService {
 		if (!started.get()) {
 			return;
 		}
-		lock.lock();
+		if (lock.tryLock()) {
+			return;
+		}
 		networkReceivesLock.lock();
 		for (NetworkReceive send : networkReceives) {
 			Payment payer = entityManager.find(Payment.class, send.getPayerId());
@@ -392,7 +409,9 @@ public class BitMixrService {
 		if (!started.get()) {
 			return;
 		}
-		lock.lock();
+		if (!lock.tryLock()) {
+			return;
+		}
 		Date now = new Date();
 		Calendar twoWeeksAgo = new GregorianCalendar();
 		twoWeeksAgo.add(Calendar.DAY_OF_YEAR, -14);
