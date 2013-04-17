@@ -1705,7 +1705,7 @@ public class Wallet implements Serializable, BlockChainListener {
         return candidates;
     }
 
-    Address getChangeAddress() {
+    public Address getChangeAddress() {
         lock.lock();
         try {
             // For now let's just pick the first key in our keychain. In future we might want to do something else to

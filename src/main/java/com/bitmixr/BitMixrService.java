@@ -337,9 +337,12 @@ public class BitMixrService {
 					throw new RuntimeException(e.getMessage(), e);
 				}
 			}
+			Wallet wallet = actors.get(payer.getId()).wallet;
+			if(wallet.getBalance().subtract(amountToSend.add(tip)).compareTo(BigInteger.ZERO) > 0){
+				tx.addOutput(wallet.getBalance().subtract(amountToSend.add(tip)), wallet.getChangeAddress());
+			}
 			final BigInteger realTip = tip;
 			SendRequest request = Wallet.SendRequest.forTx(tx);
-			Wallet wallet = actors.get(payer.getId()).wallet;
 			if (!wallet.completeTx(request)) {
 				System.out.println("AmountToSend: " + amountToSend + " wallet balence: " + wallet.getBalance() + " tip " + tip);
 				throw new RuntimeException("AmountToSend: " + amountToSend + " wallet balence: " + wallet.getBalance() + " tip " + tip);
